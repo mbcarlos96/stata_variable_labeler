@@ -60,7 +60,7 @@ program label_variables_from_csv
 		local j=0
 		foreach var of local file_`i'_vars_to_label {
 			label variable `var' "`file_`i'_label_`++j''"
-			*save, replace
+			save, replace
 		}
 	}
 end
