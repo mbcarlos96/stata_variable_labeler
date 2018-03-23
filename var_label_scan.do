@@ -29,7 +29,6 @@ program var_label_scan
 	EXPLANATION OF INPUTS:
 		data_directory = path of top folder containing data (will search that folder and all subfolders)
 		allvars = output all variables, including those containing labels
-		missonly = only output variables that are missing a variable label 
 		notunique = the samples output do not need to be unique (speeds up the program)
 		decode_var = decode variables with value labels before writing samples to output
 		samples = number of samples to output to excel, default is 5
