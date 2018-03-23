@@ -15,9 +15,6 @@ clear all
 set more off 
 set maxvar 120000
 
-*sysdir set PLUS "U:\Documents\Stata_personal\Downloaded" // UNCOMMENT AND CHANGE PATH IF WANT TO SET FOLDER WHERE DOWNLOADED ADO FILES STORED
-*sysdir set PERSONAL "U:\Documents\Stata_personal\Personal" // UNCOMMENT AND CHANGE PATH IF WANT TO SET FOLDER WHERE PERSONAL ADO FILES STORED
-
 global path_to_csv "U:/Documents/var_labels.csv" // path to CSV sheet containing variable labels (output from var_label_scan)
 
 capture program drop label_variables_from_csv
