@@ -4,7 +4,7 @@ of the variable and exports them to a .csv file.
 
 Inputs: Path to top directory.
 Outputs: var_labels.csv (saved in the current working directory)
-Date Last Modified: March 21, 2018
+Date Last Modified: March 23, 2018
 Last Modified By: Marisa Carlos (mcarlos@povertyactionlab.org)
 **********************************************************************************************************************************************/
 
@@ -13,23 +13,22 @@ clear all
 set more off 
 set maxvar 120000
 
-if c(username)=="mbc96_TH" {
-	sysdir set PLUS "U:\Documents\Stata_personal\Downloaded" 
-	sysdir set PERSONAL "U:\Documents\Stata_personal\Personal"
-	
-	cd "U:/Documents" // CHANGE PATH TO WHERE YOU WANT TO SAVE OUTPUT
-	global directory_to_scan "U:\Documents\JPAL\EDHEP - for archive_mc\All Countries\Data" // SET THIS DIRECTORY TO THE ONE YOU WANT TO SCAN (change options at botton of do-file)
-}
+*sysdir set PLUS "U:\Documents\Stata_personal\Downloaded" // UNCOMMENT AND CHANGE PATH IF WANT TO SET FOLDER WHERE DOWNLOADED ADO FILES STORED
+*sysdir set PERSONAL "U:\Documents\Stata_personal\Personal" // UNCOMMENT AND CHANGE PATH IF WANT TO SET FOLDER WHERE PERSONAL ADO FILES STORED
+
+cd "" // CHANGE PATH TO WHERE YOU WANT TO SAVE OUTPUT
+global directory_to_scan "" // SET THIS DIRECTORY TO THE ONE YOU WANT TO SCAN (change options at botton of do-file)
 
 ***Command "filelist" required:
 capture ssc install filelist
 
 capture program drop var_label_scan
 program var_label_scan
-	syntax anything(name=data_directory id="path of directory containing data")[, MISSonly NOTUNIQue decode_var SAMPles(integer 5)]
+	syntax anything(name=data_directory id="path of directory containing data")[, ALLvars NOTUNIQue decode_var SAMPles(integer 5)]
 	/*
 	EXPLANATION OF INPUTS:
 		data_directory = path of top folder containing data (will search that folder and all subfolders)
+		allvars = output all variables, including those containing labels
 		missonly = only output variables that are missing a variable label 
 		notunique = the samples output do not need to be unique (speeds up the program)
 		decode_var = decode variables with value labels before writing samples to output
@@ -70,8 +69,10 @@ program var_label_scan
 		*Go through all the variables and write the variable name and label to the output file:
 		foreach var of varlist * {
 			local label : variable label `var'
-			*If they say ONLY output variables with missing labels AND the label is missing OR they dont say only missing:
-			if ((!missing("`missonly'") & missing("`label'")) | (missing("`missonly'"))) {
+			***Remove commas from the variable label (otherwise reads it as new column):
+			local label = subinstr("`label'",",","",.)
+			*If they say dont say all variables and the label is missing OR they say all variables:
+			if ((missing("`allvars'") & missing("`label'")) | (!missing("`allvars'"))) {
 				file write label_file "`file_`i'',`var',`label',"
 				
 				*If the user wants samples output, make sure there arent any quotation marks in string vars:
@@ -104,6 +105,8 @@ program var_label_scan
 					}
 					forvalues j=1/`samples' {
 						local samp = `samp_var'[`j']
+						***Remove commas from sample (otherwise reads it as new column):
+						local samp = subinstr("`samp'",",","",.)
 						file write label_file "`samp',"
 					}
 					capture drop `decoded_var'
@@ -117,4 +120,4 @@ program var_label_scan
 	file close label_file
 end
 
-var_label_scan ${directory_to_scan}, decode_var
+var_label_scan ${directory_to_scan}

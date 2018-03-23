@@ -4,9 +4,9 @@ first run var_label_scan.do, open the output "var_labels.csv", add variable labe
 and use this file to read in the file paths, variable names and labels. The file will label the variables and save the datsets in place of the 
 old files. Only the variable labels are changed - nothing else in the data is edited.
 
-Inputs: Path to where var_labels.csv 
-Outputs: Saved versions of the datafiles contained in the variable "file" in var_labels.csv
-Date Last Modified: March 21, 2018
+Inputs: Path to var_labels.csv 
+Outputs: Saved versions of the datafiles contained in the column "file" in var_labels.csv
+Date Last Modified: March 23, 2018
 Last Modified By: Marisa Carlos (mcarlos@povertyactionlab.org)
 **********************************************************************************************************************************************/
 
@@ -15,11 +15,10 @@ clear all
 set more off 
 set maxvar 120000
 
-if c(username)=="mbc96_TH" {
-	sysdir set PLUS "U:\Documents\Stata_personal\Downloaded" 
-	sysdir set PERSONAL "U:\Documents\Stata_personal\Personal"
-	global path_to_csv "U:/Documents/var_labels.csv" // path to CSV sheet containing variable labels (output from var_label_scan)
-}
+*sysdir set PLUS "U:\Documents\Stata_personal\Downloaded" // UNCOMMENT AND CHANGE PATH IF WANT TO SET FOLDER WHERE DOWNLOADED ADO FILES STORED
+*sysdir set PERSONAL "U:\Documents\Stata_personal\Personal" // UNCOMMENT AND CHANGE PATH IF WANT TO SET FOLDER WHERE PERSONAL ADO FILES STORED
+
+global path_to_csv "U:/Documents/var_labels.csv" // path to CSV sheet containing variable labels (output from var_label_scan)
 
 capture program drop label_variables_from_csv
 program label_variables_from_csv
@@ -60,7 +59,7 @@ program label_variables_from_csv
 		local j=0
 		foreach var of local file_`i'_vars_to_label {
 			label variable `var' "`file_`i'_label_`++j''"
-			save, replace
+			*save, replace
 		}
 	}
 end
