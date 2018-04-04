@@ -6,7 +6,7 @@ old files. Only the variable labels are changed - nothing else in the data is ed
 
 Inputs: Path to var_labels.csv 
 Outputs: Saved versions of the datafiles contained in the column "file" in var_labels.csv
-Date Last Modified: March 23, 2018
+Date Last Modified: April 4, 2018
 Last Modified By: Marisa Carlos (mcarlos@povertyactionlab.org)
 **********************************************************************************************************************************************/
 
@@ -15,7 +15,7 @@ clear all
 set more off 
 set maxvar 120000
 
-global path_to_csv "U:/Documents/var_labels.csv" // path to CSV sheet containing variable labels (output from var_label_scan)
+global path_to_csv "" // path to CSV sheet containing variable labels (output from var_label_scan)
 
 capture program drop label_variables_from_csv
 program label_variables_from_csv
@@ -56,8 +56,8 @@ program label_variables_from_csv
 		local j=0
 		foreach var of local file_`i'_vars_to_label {
 			label variable `var' "`file_`i'_label_`++j''"
-			save, replace
 		}
+		save, replace
 	}
 end
 
